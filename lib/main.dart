@@ -32,14 +32,21 @@ class TODOState extends State<TODO> {
     });
   }
 
+  // A new callback function to toggle task's completion
+  void onTaskToggled(Task task) {
+    setState(() {
+      task.setCompleted(!task.isCompleted());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TODO app',
       initialRoute: '/',
       routes: {
-        '/': (context) => TODOList(tasks: tasks),
-        // Passing our function as a callback
+        // Passing the function as a callback
+        '/': (context) => TODOList(tasks: tasks, onToggle: onTaskToggled),
         '/create': (context) => TODOCreate(onCreate: onTaskCreated,),
       },
     );
@@ -49,8 +56,9 @@ class TODOState extends State<TODO> {
 class TODOList extends StatelessWidget {
 
   final List<Task> tasks;
+  final onToggle;
 
-  TODOList({@required this.tasks});
+  TODOList({@required this.tasks, @required this.onToggle});
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +69,15 @@ class TODOList extends StatelessWidget {
       body: ListView.builder(
           itemCount: tasks.length,
           itemBuilder: (context, index) {
-            return ListTile(
+            // Changed ListTile to CheckboxListTile to have
+            // the checkbox capability
+            return CheckboxListTile(
               title: Text(tasks[index].getName()),
+              // Passing a value and a callback for the checkbox
+              value: tasks[index].isCompleted(),
+              // The _ in the argument list is there because onChanged expects it
+              // But we are not using it
+              onChanged: (_) => onToggle(tasks[index]),
             );
           }),
       floatingActionButton: FloatingActionButton(
