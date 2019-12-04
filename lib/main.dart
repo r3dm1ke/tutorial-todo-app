@@ -3,8 +3,6 @@ import 'package:todo_app/task.dart';
 
 void main() => runApp(TODOApp());
 
-// The sole reason we keep this extra component is
-// because runApp will only take a StatelessWidget as its argument
 class TODOApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -12,27 +10,28 @@ class TODOApp extends StatelessWidget {
   }
 }
 
-// Here we are defining a StatefulWidget
 class TODO extends StatefulWidget {
 
-  // Every stateful widget must override createState
   @override
   State<StatefulWidget> createState() {
     return TODOState();
   }
 }
 
-// This is the state for then TODO widget
 class TODOState extends State<TODO> {
 
-  // We define the properties for the widget in its state
-  final List<Task> tasks = [
-    Task('Do homework'),
-    Task('Laundry'),
-    Task('Finish this tutorial')
-  ];
+  // At this point we can remove the dummy data
+  final List<Task> tasks = [];
 
-  // Now state is responsible for building the widget
+  // Function that modifies the state when a new task is created
+  void onTaskCreated(String name) {
+    // All state modifications have to be wrapped in setState
+    // This way Flutter knows that something has changed
+    setState(() {
+      tasks.add(Task(name));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -40,7 +39,8 @@ class TODOState extends State<TODO> {
       initialRoute: '/',
       routes: {
         '/': (context) => TODOList(tasks: tasks),
-        '/create': (context) => TODOCreate(),
+        // Passing our function as a callback
+        '/create': (context) => TODOCreate(onCreate: onTaskCreated,),
       },
     );
   }
@@ -73,11 +73,51 @@ class TODOList extends StatelessWidget {
   }
 }
 
-class TODOCreate extends StatelessWidget {
+// Since we are handling user input, state is used
+class TODOCreate extends StatefulWidget {
+
+  // Callback function that gets called when user submits a new task
+  final onCreate;
+
+  TODOCreate({@required this.onCreate});
+
+  @override
+  State<StatefulWidget> createState() {
+    return TODOCreateState();
+  }
+}
+
+class TODOCreateState extends State<TODOCreate> {
+
+  // Controller that handles the TextField
+  final TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Create a task')),
-        body: Center(child: Text('Not yet')));
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: TextField(
+              // Opens the keyboard automatically
+              autofocus: true,
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: 'Enter name for your task'
+              )
+            )
+          )
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.done),
+          onPressed: () {
+            // Call the callback with the new task name
+            widget.onCreate(controller.text);
+            // Go back to list screen
+            Navigator.pop(context);
+          },
+        ),
+    );
   }
 }
