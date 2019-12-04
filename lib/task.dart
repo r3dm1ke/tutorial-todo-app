@@ -1,5 +1,4 @@
 class Task {
-
   // Class properties
   // Underscore makes them private
   String _name;
@@ -16,5 +15,4 @@ class Task {
   // Getter and setter for completed
   isCompleted() => this._completed;
   setCompleted(completed) => this._completed = completed;
-
 }
