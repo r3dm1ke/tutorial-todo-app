@@ -1,31 +1,36 @@
-// Importing the material library with common UI components
 import 'package:flutter/material.dart';
+// Importing our Task class
+import 'package:todo_app/task.dart';
 
-// Entry point for our application
-// It tells Flutter to run the app and use TODOApp widget as the entry point
 void main() => runApp(TODOApp());
 
-// The root widget for our app
-// It is stateless, that is why it expends StatelessWidget
 class TODOApp extends StatelessWidget {
 
-  // We are overriding the build method
-  // It has to be done for every custom widget you define
+  // Creating a list of tasks with some dummy values
+  final List<Task> tasks = [
+    Task('Do homework'),
+    Task('Laundry'),
+    Task('Finish this tutorial')
+  ];
+
   @override
   Widget build(BuildContext context) {
-    // Material app is a built in widget to help you with the app layout
     return MaterialApp(
         title: 'TODO app',
-        // Scaffold is a built in widget to help you with the specific screen layout
         home: Scaffold(
-          // AppBar is the header in the top of the screen
             appBar: AppBar(
               title: Text('TODO app'),
             ),
-            // This is the actual content of the screen
-            // We output the text 'Hello word', also centering it in the middle of the screen
-            body: Center(
-                child: Text('Hello world')
+            // Using ListView.builder to render a list of tasks
+            body: ListView.builder(
+              // How many items to render
+              itemCount: tasks.length,
+              // Functions that accepts an index and renders a task
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(tasks[index].getName()),
+                );
+              }
             )
         )
     );
