@@ -20,19 +20,14 @@ class TODO extends StatefulWidget {
 
 class TODOState extends State<TODO> {
 
-  // At this point we can remove the dummy data
   final List<Task> tasks = [];
 
-  // Function that modifies the state when a new task is created
   void onTaskCreated(String name) {
-    // All state modifications have to be wrapped in setState
-    // This way Flutter knows that something has changed
     setState(() {
       tasks.add(Task(name));
     });
   }
 
-  // A new callback function to toggle task's completion
   void onTaskToggled(Task task) {
     setState(() {
       task.setCompleted(!task.isCompleted());
@@ -45,7 +40,6 @@ class TODOState extends State<TODO> {
       title: 'TODO app',
       initialRoute: '/',
       routes: {
-        // Passing the function as a callback
         '/': (context) => TODOList(tasks: tasks, onToggle: onTaskToggled),
         '/create': (context) => TODOCreate(onCreate: onTaskCreated,),
       },
@@ -69,14 +63,9 @@ class TODOList extends StatelessWidget {
       body: ListView.builder(
           itemCount: tasks.length,
           itemBuilder: (context, index) {
-            // Changed ListTile to CheckboxListTile to have
-            // the checkbox capability
             return CheckboxListTile(
               title: Text(tasks[index].getName()),
-              // Passing a value and a callback for the checkbox
               value: tasks[index].isCompleted(),
-              // The _ in the argument list is there because onChanged expects it
-              // But we are not using it
               onChanged: (_) => onToggle(tasks[index]),
             );
           }),
@@ -88,10 +77,8 @@ class TODOList extends StatelessWidget {
   }
 }
 
-// Since we are handling user input, state is used
 class TODOCreate extends StatefulWidget {
 
-  // Callback function that gets called when user submits a new task
   final onCreate;
 
   TODOCreate({@required this.onCreate});
@@ -104,7 +91,6 @@ class TODOCreate extends StatefulWidget {
 
 class TODOCreateState extends State<TODOCreate> {
 
-  // Controller that handles the TextField
   final TextEditingController controller = TextEditingController();
 
   @override
@@ -115,7 +101,6 @@ class TODOCreateState extends State<TODOCreate> {
           child: Padding(
             padding: EdgeInsets.all(16),
             child: TextField(
-              // Opens the keyboard automatically
               autofocus: true,
               controller: controller,
               decoration: InputDecoration(
@@ -127,9 +112,7 @@ class TODOCreateState extends State<TODOCreate> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.done),
           onPressed: () {
-            // Call the callback with the new task name
             widget.onCreate(controller.text);
-            // Go back to list screen
             Navigator.pop(context);
           },
         ),
