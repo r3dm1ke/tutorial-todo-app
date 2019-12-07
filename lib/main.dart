@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/task.dart';
+import 'package:todo_app/login.dart';
 import 'package:todo_app/create.dart';
 import 'package:todo_app/list.dart';
 
@@ -36,13 +37,18 @@ class TODOState extends State<TODO> {
     });
   }
 
+  void onLogin(String email, String password) {
+    // We will finish it later
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TODO app',
       initialRoute: '/',
       routes: {
-        '/': (context) => TODOList(tasks: tasks, onToggle: onTaskToggled),
+        '/': (context) => TODOLogin(onLogin: onLogin),
+        '/list': (context) => TODOList(tasks: tasks, onToggle: onTaskToggled),
         '/create': (context) => TODOCreate(onCreate: onTaskCreated,),
       },
     );
