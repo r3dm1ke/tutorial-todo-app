@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/auth.dart';
 
-// As login page has to handle user input, it has to be stateful
 class TODOLogin extends StatefulWidget {
 
   // Callback function that will be called on pressing the login button
@@ -16,10 +16,47 @@ class TODOLogin extends StatefulWidget {
 
 class LoginState extends State<TODOLogin> {
 
-  // Controllers for handling email and password
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // Authentication helper
+  final auth = Authentication();
+
+  // Function to authenticate, call callback to save the user and navigate to next page
+  void doLogin() async {
+    final user = await auth.login(emailController.text, passwordController.text);
+    if (user != null) {
+      // Calling callback in TODOState
+      widget.onLogin(user);
+      Navigator.pushReplacementNamed(context, '/list');
+    } else {
+      _showAuthFailedDialog();
+    }
+  }
+
+  // Show error if login unsuccessfull
+  void _showAuthFailedDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text('Could not log in'),
+          content: new Text('Double check your credentials and try again'),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +66,12 @@ class LoginState extends State<TODOLogin> {
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
-        // Align widgets in a vertical column
         child: Column(
-          // Passing multiple widgets as children to Column
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(bottom: 16),
               child: TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Email'
@@ -45,6 +81,7 @@ class LoginState extends State<TODOLogin> {
             Padding(
                 padding: EdgeInsets.only(bottom: 16),
                 child: TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
@@ -53,11 +90,9 @@ class LoginState extends State<TODOLogin> {
                 )
             ),
             RaisedButton(
-              // Calling the callback with the supplied email and password
-              onPressed: () =>
-                  widget.onLogin(emailController.text, passwordController.text),
+              // Calling the doLogin function on press
+              onPressed: doLogin,
               child: Text('LOGIN'),
-              // Setting the primary color on the button
               color: ThemeData().primaryColor,
             )
           ],

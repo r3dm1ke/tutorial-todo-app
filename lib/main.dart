@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/auth.dart';
 import 'package:todo_app/task.dart';
 import 'package:todo_app/login.dart';
 import 'package:todo_app/create.dart';
@@ -24,6 +26,8 @@ class TODO extends StatefulWidget {
 class TODOState extends State<TODO> {
 
   final List<Task> tasks = [];
+  final Authentication auth = new Authentication();
+  FirebaseUser user;
 
   void onTaskCreated(String name) {
     setState(() {
@@ -37,8 +41,10 @@ class TODOState extends State<TODO> {
     });
   }
 
-  void onLogin(String email, String password) {
-    // We will finish it later
+  void onLogin(FirebaseUser user) {
+    setState(() {
+      this.user = user;
+    });
   }
 
   @override
