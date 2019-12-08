@@ -1,10 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class TODOCreate extends StatefulWidget {
-
-  final onCreate;
-
-  TODOCreate({@required this.onCreate});
 
   @override
   State<StatefulWidget> createState() {
@@ -14,6 +11,7 @@ class TODOCreate extends StatefulWidget {
 
 class TODOCreateState extends State<TODOCreate> {
 
+  final collection = Firestore.instance.collection('tasks');
   final TextEditingController controller = TextEditingController();
 
   @override
@@ -34,8 +32,9 @@ class TODOCreateState extends State<TODOCreate> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done),
-        onPressed: () {
-          widget.onCreate(controller.text);
+        onPressed: () async {
+          // Creating a new document
+          await collection.add({'name': controller.text, 'completed': false});
           Navigator.pop(context);
         },
       ),

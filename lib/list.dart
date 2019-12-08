@@ -1,16 +1,11 @@
 // Importing firestore package
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app/task.dart';
 
 class TODOList extends StatelessWidget {
 
-  final List<Task> tasks;
-  final onToggle;
   // Setting reference to 'tasks' collection
   final collection = Firestore.instance.collection('tasks');
-
-  TODOList({@required this.tasks, @required this.onToggle});
 
   @override
   Widget build(BuildContext context) {
